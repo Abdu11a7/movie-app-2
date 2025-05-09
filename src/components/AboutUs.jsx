@@ -198,7 +198,7 @@ const AboutUs = () => {
         </motion.div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .hero-gradient {
           background: linear-gradient(45deg, #000000, #1a1a1a);
           opacity: 0.95;
