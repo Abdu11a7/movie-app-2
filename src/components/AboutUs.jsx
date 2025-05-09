@@ -1,8 +1,8 @@
 /** @format */
 
 import { Link } from "react-router-dom";
-import SharedBtn from "../SharedBtn";
 import { motion } from "framer-motion";
+import SharedBtn from "../SharedBtn";
 
 const AboutUs = () => {
   const features = [
@@ -40,8 +40,7 @@ const AboutUs = () => {
   return (
     <div className="min-vh-100 bg-dark text-light">
       {/* Hero Section */}
-      <div className="position-relative overflow-hidden">
-        <div className="hero-gradient position-absolute w-100 h-100"></div>
+      <div className="position-relative  overflow-hidden">
         <div className="container py-5">
           <div className="row min-vh-50 align-items-center">
             <div className="col-lg-6">
