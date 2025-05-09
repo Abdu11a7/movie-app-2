@@ -12,7 +12,7 @@ export default function MoviesSection({
   if (!movies || movies.length === 0) return null;
 
   return (
-    <div className="movies-section">
+    <div className="container movies-section">
       <div className="section-header">
         <h2 className="section-title">{title}</h2>
       </div>
