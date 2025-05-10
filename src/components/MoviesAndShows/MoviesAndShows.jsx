@@ -191,16 +191,6 @@ export function MoviesAndShows() {
               borderColor: "#333",
             }}
           />
-          <Button
-            style={{
-              borderRadius: "0 0.5rem 0.5rem 0",
-              backgroundColor: "#e3080f",
-              borderColor: "#e3080f",
-              fontWeight: "bold",
-              padding: "0.5rem 1.2rem",
-            }}>
-            Search
-          </Button>
         </InputGroup>
         <Form.Select
           style={{

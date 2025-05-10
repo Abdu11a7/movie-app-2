@@ -38,7 +38,7 @@ const AboutUs = () => {
   ];
 
   return (
-    <div className="min-vh-100 bg-dark text-light">
+    <div className="min-vh-100 text-light">
       {/* Hero Section */}
       <div className="position-relative  overflow-hidden">
         <div className="container py-5">
@@ -49,7 +49,7 @@ const AboutUs = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}>
                 <h1 className="display-3 fw-bold mb-4">
-                  Welcome to <span className="text-danger">MovieApp</span>
+                  Welcome to <span className="text-red">MovieApp</span>
                 </h1>
                 <p className="lead mb-4">
                   Your ultimate destination for discovering, managing, and
@@ -87,7 +87,7 @@ const AboutUs = () => {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}>
           <h2 className="text-center mb-5">
-            Why Choose <span className="text-danger">MovieApp</span>?
+            Why Choose <span className="text-red">MovieApp</span>?
           </h2>
           <div className="row g-4">
             {features.map((feature, index) => (
@@ -98,12 +98,10 @@ const AboutUs = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}>
-                <div className="feature-card h-100 p-4 rounded-4 bg-dark border border-danger">
+                <div className="feature-card h-100 p-4 rounded-4 border border-danger">
                   <div className="feature-icon mb-3">{feature.icon}</div>
                   <h3 className="h4 mb-3">{feature.title}</h3>
-                  <p className="mb-0 text-light-emphasis">
-                    {feature.description}
-                  </p>
+                  <p className="mb-0 text-white-50">{feature.description}</p>
                 </div>
               </motion.div>
             ))}
@@ -118,11 +116,11 @@ const AboutUs = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="mission-card p-5 rounded-4 bg-dark border border-danger">
+          className="mission-card p-5 rounded-4 ">
           <div className="row align-items-center">
             <div className="col-lg-6 mb-4 mb-lg-0">
               <h2 className="mb-4">
-                Our <span className="text-danger">Mission</span>
+                Our <span className="text-red">Mission</span>
               </h2>
               <p className="lead mb-4">
                 At MovieApp, we're passionate about bringing the world of cinema
@@ -157,20 +155,20 @@ const AboutUs = () => {
           viewport={{ once: true }}
           className="row g-4 text-center">
           <div className="col-md-4">
-            <div className="stat-card p-4 rounded-4 bg-dark border border-danger">
-              <h3 className="display-4 text-danger mb-2">10K+</h3>
+            <div className="stat-card p-4 bg-dark border border-danger rounded-4  ">
+              <h3 className="display-4 text-red mb-2">10K+</h3>
               <p className="mb-0">Movies in Database</p>
             </div>
           </div>
           <div className="col-md-4">
             <div className="stat-card p-4 rounded-4 bg-dark border border-danger">
-              <h3 className="display-4 text-danger mb-2">5K+</h3>
+              <h3 className="display-4 text-red mb-2">5K+</h3>
               <p className="mb-0">Active Users</p>
             </div>
           </div>
           <div className="col-md-4">
             <div className="stat-card p-4 rounded-4 bg-dark border border-danger">
-              <h3 className="display-4 text-danger mb-2">50K+</h3>
+              <h3 className="display-4 text-red mb-2">50K+</h3>
               <p className="mb-0">Reviews Posted</p>
             </div>
           </div>
@@ -184,16 +182,14 @@ const AboutUs = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="cta-card p-5 rounded-4 bg-dark border border-danger text-center">
+          className="cta-card p-5 rounded-4 text-center">
           <h2 className="mb-4">Ready to Start Your Movie Journey?</h2>
           <p className="lead mb-4">
             Join thousands of movie enthusiasts who are already using MovieApp
             to enhance their movie experience.
           </p>
-          <Link
-            to="/movies"
-            className="btn btn-danger btn-lg px-5 py-3 rounded-pill">
-            Get Started Now
+          <Link to="/movies&shows">
+            <SharedBtn>Get Started Now</SharedBtn>
           </Link>
         </motion.div>
       </div>
@@ -216,13 +212,7 @@ const AboutUs = () => {
           font-size: 2.5rem;
         }
 
-        .mission-card {
-          background: linear-gradient(
-            45deg,
-            rgba(0, 0, 0, 0.8),
-            rgba(26, 26, 26, 0.8)
-          );
-        }
+        
 
         .stat-card {
           transition: transform 0.3s ease;
@@ -232,13 +222,7 @@ const AboutUs = () => {
           transform: translateY(-5px);
         }
 
-        .cta-card {
-          background: linear-gradient(
-            45deg,
-            rgba(0, 0, 0, 0.8),
-            rgba(26, 26, 26, 0.8)
-          );
-        }
+
 
         * {
           font-family: "Satoshi", sans-serif;

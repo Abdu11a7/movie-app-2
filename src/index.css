@@ -20,11 +20,24 @@ body {
   letter-spacing: 1.05px;
 }
 input.form-control:focus,
-textarea.form-control:focus {
-  border-color: rgba(195, 5, 5, 0.5);
+textarea.form-control:focus,
+select:focus {
+  border-color: rgba(195, 5, 5, 0.5) !important;
   box-shadow: 0 0 0 0.1rem rgb(87 0 0 / 50%) !important;
   caret-color: #e3080f;
 }
+select {
+  border-radius: 4px;
+  cursor: pointer;
+}
+option {
+  background-color: #121212;
+  color: white;
+  border-bottom: #e3080f;
+  padding: 10px;
+  font-size: 16px;
+}
+
 .box::-webkit-scrollbar {
   width: 10px;
 }
@@ -147,4 +160,12 @@ textarea.form-control:focus {
       color: #fff;
     }
   }
+}
+
+.manegment__form {
+  background-color: #121212;
+}
+
+.text-red {
+  color: #e3080f;
 }
