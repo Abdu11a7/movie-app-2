@@ -12,9 +12,9 @@ export default function MoviesSection({
   if (!movies || movies.length === 0) return null;
 
   return (
-    <div className="container movies-section">
+    <div className="container movies-section mt-5">
       <div className="section-header">
-        <h2 className="section-title">{title}</h2>
+        <h2 className="section-title text-white">{title}</h2>
       </div>
 
       {showGenres && (
@@ -32,7 +32,7 @@ export default function MoviesSection({
 
       {showReleaseDates && (
         <div className="release-dates">
-          {movies.slice(0, 5).map((movie, index) => (
+          {movies.slice(0, 4).map((movie, index) => (
             <div key={index} className="release-date">
               Released at {movie.Released}
             </div>
@@ -41,8 +41,8 @@ export default function MoviesSection({
       )}
 
       <Row className="movies-row">
-        {movies.map((movie) => (
-          <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
+        {movies.slice(0, 4).map((movie) => (
+          <Col key={movie.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
             <MovieCard movie={movie} />
           </Col>
         ))}

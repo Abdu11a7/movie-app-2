@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SharedBtn from "./../../SharedBtn";
 import validateMovie from "./../../validations/movieValidation";
+import { addMovie, editMovie, getMovieById } from "../../API/FetchData";
 
 const MovieForm = () => {
   const { id } = useParams(); // Get id from URL params
@@ -41,7 +42,6 @@ const MovieForm = () => {
     Metascore: "N/A",
     imdbRating: "",
     imdbVotes: "",
-    id: "",
     Type: "movie",
     DVD: "N/A",
     BoxOffice: "",
@@ -49,27 +49,31 @@ const MovieForm = () => {
     Website: "N/A",
     Response: "True",
     Popular: "false",
+    Trailer: "",
   };
 
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({}); //3shan el errors elly htegy mn validation
 
-  // Load existing movie data when in edit mode
-  useEffect(() => {
-    // This would be replaced with an actual API call in a real app
-    if (!isAddMode) {
-      // Simulated fetch - in a real app, this would be an API call
-      console.log(`Fetching movie with id ${id} for editing`);
-      if (id === "1") {
-        setFormData({
-          ...initialFormData, // eldata elly htb2a fe el Card
-          Title: "Example Movie",
-          Year: "2023",
-          Plot: "el stroy bt3 elfilm",
-          id: "1", // edtit 3 tool
-        });
-      }
+  const getMovie = async (movieID) => {
+    try {
+      const data = await getMovieById(movieID);
+      return data; // ✅ Return the actual data
+    } catch (error) {
+      console.error("Failed to fetch movie:", error);
+      return null;
     }
+  };
+  useEffect(() => {
+    const fetchMovie = async () => {
+      const movieData = await getMovie(id);
+
+      if (!isAddMode && id !== "0") {
+        setFormData(movieData);
+      }
+    };
+
+    fetchMovie();
   }, [id, isAddMode]);
 
   // Handle changes to single-value form fields
@@ -117,6 +121,7 @@ const MovieForm = () => {
   const validate = () => {
     const { error } = validateMovie(formData);
     if (!error) return true;
+    console.log(error);
 
     const newErrors = {};
     error.details.forEach((detail) => {
@@ -129,23 +134,22 @@ const MovieForm = () => {
   // Handle form submission for both new and existing movies
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("default");
     if (validate()) {
       if (isAddMode) {
-        // Add new movie
-        console.log("Adding new movie:", formData);
+        addMovie(formData);
       } else {
-        // Edit existing movie
-        console.log(`Updating movie with id ${id}:`, formData);
+        editMovie(formData.id, formData);
       }
-
-      // After submission, redirect back to movie list
-      navigate("/movies");
+      navigate("/dashboard");
+    } else {
+      console.log("not");
     }
   };
 
   // Handle form cancellation and return to movie list
   const handleCancel = () => {
-    navigate("/movies");
+    navigate("/dashboard");
   };
 
   //Movie Form Template
@@ -154,7 +158,8 @@ const MovieForm = () => {
       <h2 className="mb-4">{isAddMode ? "Add New Movie" : "Edit Movie"}</h2>
       <form
         onSubmit={handleSubmit}
-        className="manegment__form p-5 rounded-2 shadow-lg">
+        className="manegment__form p-5 rounded-2 shadow-lg"
+      >
         <div className="mb-3">
           <label htmlFor="Title" className="form-label">
             Title*
@@ -229,6 +234,19 @@ const MovieForm = () => {
             onChange={handleChange}
           />
         </div>
+        <div className="mb-3">
+          <label htmlFor="BoxOffice" className="form-label">
+            BoxOffice
+          </label>
+          <input
+            type="text"
+            id="BoxOffice"
+            name="BoxOffice"
+            className="form-control"
+            value={formData.BoxOffice}
+            onChange={handleChange}
+          />
+        </div>
 
         <div className="mb-3">
           <label className="form-label">Genre*</label>
@@ -245,7 +263,8 @@ const MovieForm = () => {
                   type="button"
                   className="btn btn-outline-danger"
                   onClick={() => removeArrayItem("Genre", index)}
-                  title="Remove Genre">
+                  title="Remove Genre"
+                >
                   <i className="bi bi-x"></i>
                 </button>
               )}
@@ -258,7 +277,8 @@ const MovieForm = () => {
             type="button"
             className="btn btn-outline-light"
             onClick={() => addArrayItem("Genre")}
-            title="Add Genre">
+            title="Add Genre"
+          >
             <i className="bi bi-plus"></i> Add Genre
           </button>
         </div>
@@ -280,7 +300,8 @@ const MovieForm = () => {
                   type="button"
                   className="btn btn-outline-danger"
                   onClick={() => removeArrayItem("Director", index)}
-                  title="Remove Director">
+                  title="Remove Director"
+                >
                   <i className="bi bi-x"></i>
                 </button>
               )}
@@ -293,7 +314,8 @@ const MovieForm = () => {
             type="button"
             className="btn btn-outline-light"
             onClick={() => addArrayItem("Director")}
-            title="Add Director">
+            title="Add Director"
+          >
             <i className="bi bi-plus"></i> Add Director
           </button>
         </div>
@@ -313,7 +335,8 @@ const MovieForm = () => {
                   type="button"
                   className="btn btn-outline-danger"
                   onClick={() => removeArrayItem("Writer", index)}
-                  title="Remove Writer">
+                  title="Remove Writer"
+                >
                   <i className="bi bi-x"></i>
                 </button>
               )}
@@ -326,7 +349,8 @@ const MovieForm = () => {
             type="button"
             className="btn btn-outline-light"
             onClick={() => addArrayItem("Writer")}
-            title="Add Writer">
+            title="Add Writer"
+          >
             <i className="bi bi-plus"></i> Add Writer
           </button>
         </div>
@@ -346,7 +370,8 @@ const MovieForm = () => {
                   type="button"
                   className="btn btn-outline-danger"
                   onClick={() => removeArrayItem("Actors", index)}
-                  title="Remove Actor">
+                  title="Remove Actor"
+                >
                   <i className="bi bi-x"></i>
                 </button>
               )}
@@ -359,7 +384,8 @@ const MovieForm = () => {
             type="button"
             className="btn btn-outline-light"
             onClick={() => addArrayItem("Actors")}
-            title="Add Actor">
+            title="Add Actor"
+          >
             <i className="bi bi-plus"></i> Add Actor
           </button>
         </div>
@@ -374,7 +400,8 @@ const MovieForm = () => {
             className={`form-control ${errors.Plot ? "is-invalid" : ""}`}
             value={formData.Plot}
             onChange={handleChange}
-            rows="4"></textarea>
+            rows="4"
+          ></textarea>
           {errors.Plot && <div className="invalid-feedback">{errors.Plot}</div>}
         </div>
 
@@ -396,7 +423,8 @@ const MovieForm = () => {
                     type="button"
                     className="btn btn-outline-danger"
                     onClick={() => removeArrayItem("Language", index)}
-                    title="Remove Language">
+                    title="Remove Language"
+                  >
                     <i className="bi bi-x"></i>
                   </button>
                 )}
@@ -409,7 +437,8 @@ const MovieForm = () => {
               type="button"
               className="btn btn-outline-light"
               onClick={() => addArrayItem("Language")}
-              title="Add Language">
+              title="Add Language"
+            >
               <i className="bi bi-plus"></i> Add Language
             </button>
           </div>
@@ -431,7 +460,8 @@ const MovieForm = () => {
                     type="button"
                     className="btn btn-outline-danger"
                     onClick={() => removeArrayItem("Country", index)}
-                    title="Remove Country">
+                    title="Remove Country"
+                  >
                     <i className="bi bi-x"></i>
                   </button>
                 )}
@@ -444,7 +474,8 @@ const MovieForm = () => {
               type="button"
               className="btn btn-outline-light"
               onClick={() => addArrayItem("Country")}
-              title="Add Country">
+              title="Add Country"
+            >
               <i className="bi bi-plus"></i> Add Country
             </button>
           </div>
@@ -474,6 +505,23 @@ const MovieForm = () => {
                 style={{ maxHeight: "200px" }}
               />
             </div>
+          )}
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="Trailer" className="form-label">
+            Trailer URL*
+          </label>
+          <input
+            type="text"
+            id="Trailer"
+            name="Trailer"
+            className={`form-control ${errors.Trailer ? "is-invalid" : ""}`}
+            value={formData.Trailer}
+            onChange={handleChange}
+          />
+          {errors.Trailer && (
+            <div className="invalid-feedback">{errors.Trailer}</div>
           )}
         </div>
 
@@ -507,7 +555,8 @@ const MovieForm = () => {
             name="Popular"
             className="form-select"
             value={formData.Popular}
-            onChange={handleChange}>
+            onChange={handleChange}
+          >
             <option value="false">No</option>
             <option value="true">Yes</option>
           </select>
@@ -520,7 +569,8 @@ const MovieForm = () => {
           <button
             type="button"
             className="btn  rounded-2 btn-outline-light"
-            onClick={handleCancel}>
+            onClick={handleCancel}
+          >
             Cancel
           </button>
         </div>

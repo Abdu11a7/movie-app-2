@@ -1,8 +1,15 @@
 import React from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { FaPlus, FaSignOutAlt } from "react-icons/fa";
+import { handleSignOutAdmin } from "../API/FetchData";
+import { useNavigate } from "react-router-dom";
 
 export default function BoardHeader({ onSearch, onAdd, onSignOut }) {
+  const navigate = useNavigate();
+  const handleSignOut = () => {
+    handleSignOutAdmin();
+    navigate("/");
+  };
   return (
     <header className="my-3">
       <h2 className="text-white text-center mb-4">
@@ -16,7 +23,8 @@ export default function BoardHeader({ onSearch, onAdd, onSignOut }) {
           <Button
             variant="btn"
             className="btn-outline-red fw-bold"
-            onClick={onSignOut}>
+            onClick={handleSignOut}
+          >
             <FaSignOutAlt /> Sign Out
           </Button>
         </div>

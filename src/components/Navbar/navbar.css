@@ -27,3 +27,14 @@ nav {
     color: #cdcccc !important;
   }
 }
+.search-nav {
+  width: 15%;
+}
+.searchNav {
+  border-color: rgb(51, 51, 51);
+}
+@media (max-width: 992px) {
+  .search-nav {
+    width: 100%;
+  }
+}

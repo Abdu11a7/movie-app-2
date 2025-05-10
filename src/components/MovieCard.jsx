@@ -33,7 +33,8 @@ export default function MovieCard({ movie }) {
             borderRadius: "20px",
             margin: "0 auto",
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-          }}>
+          }}
+        >
           View Details
         </Button>
       </Card.Body>

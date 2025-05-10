@@ -4,8 +4,15 @@ import axios from "axios";
 const baseUrl = "http://localhost:3000/";
 
 //get all movies
-export const getAllMovies = () => axios.get(`${baseUrl}movies`);
-
+export const getAllMovies = async () => {
+  try {
+    const response = await axios.get(`${baseUrl}movies`);
+    return response.data; // Returns only the data payload
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error; // Re-throw for component-level handling
+  }
+};
 //get popular movies
 export const getPopularMovies = async () => {
   let response = await getAllMovies();
@@ -31,7 +38,15 @@ export const getNewestMovies = async () => {
 };
 
 //get movie by id
-export const getMovieById = (imdbID) => axios.get(`${baseUrl}movies/${imdbID}`);
+export const getMovieById = async (imdbID) => {
+  try {
+    const response = await axios.get(`${baseUrl}movies/${imdbID}`);
+    return response.data; // Return the actual movie data
+  } catch (error) {
+    console.error("Error fetching movie:", error);
+    throw error; // Re-throw to let calling code handle it
+  }
+};
 
 //get movie by search
 export const getMovieBySearch = async (searchQuery) => {
@@ -57,15 +72,38 @@ export const getMovieByType = (type) =>
   axios.get(`${baseUrl}movies?Type=${type}`);
 
 //Delete Movie by ID
-export const deleteMovie = (imdbID) =>
-  axios.delete(`${baseUrl}movies/${imdbID}`);
+export const deleteMovie = async (imdbID) => {
+  try {
+    const response = await axios.delete(`${baseUrl}movies/${imdbID}`);
+    return response.data; // Typically returns success message or deleted movie data
+  } catch (error) {
+    console.error(`Error deleting movie ${imdbID}:`, error);
+    if (error.response) {
+      // Server responded with error status (4xx/5xx)
+      throw new Error(error.response.data.message || "Failed to delete movie");
+    } else if (error.request) {
+      // Request was made but no response received
+      throw new Error("No response from server - network error");
+    } else {
+      // Something else went wrong
+      throw new Error("Error setting up delete request");
+    }
+  }
+};
 
 //ADD MOVIE
 export const addMovie = (movie) => axios.post(`${baseUrl}movies`, movie);
 
 //edit movie
-export const editMovie = (id, movie) =>
-  axios.put(`${baseUrl}movies/${id}`, movie);
+export const editMovie = async (id, movie) => {
+  try {
+    const response = await axios.put(`${baseUrl}movies/${id}`, movie);
+    return response.data; // Returns the updated movie data from server
+  } catch (error) {
+    console.error(`Error updating movie ${id}:`, error);
+    throw error; // Re-throw to allow component-level error handling
+  }
+};
 
 //add review
 export const addReviewToMovie = async (id, review) => {
@@ -132,11 +170,34 @@ export const filterByGenre = async (genre) => {
 export const getAllGenres = async () => {
   try {
     const response = await getAllMovies();
-    const data = response.data;
-    const genreList = data.flatMap((movie) => movie.Genre || []);
-    const uniqueGenres = Array.from(
-      new Set(genreList.map((genre) => genre.trim()))
-    );
+
+    // More flexible response handling
+    const moviesArray = Array.isArray(response)
+      ? response
+      : Array.isArray(response?.data)
+      ? response.data
+      : [];
+
+    if (moviesArray.length === 0) {
+      console.warn("No movies data received");
+      return [];
+    }
+
+    // Extract and process genres
+    const allGenres = moviesArray
+      .flatMap((movie) => {
+        // Handle different possible Genre field structures
+        if (!movie?.Genre) return [];
+        if (Array.isArray(movie.Genre)) return movie.Genre;
+        if (typeof movie.Genre === "string") return movie.Genre.split(",");
+        return [];
+      })
+      .map((genre) => String(genre).trim()) // Ensure string and trim
+      .filter((genre) => genre.length > 0); // Remove empty
+
+    // Remove duplicates (case-sensitive)
+    const uniqueGenres = [...new Set(allGenres)];
+
     return uniqueGenres;
   } catch (error) {
     console.error("Error fetching genres:", error);

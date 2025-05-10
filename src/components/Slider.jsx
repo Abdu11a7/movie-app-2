@@ -27,7 +27,8 @@ export default function Slider() {
       activeIndex={index}
       onSelect={handleSelect}
       controls={true}
-      indicators={true}>
+      indicators={true}
+    >
       {slides.map((slide, idx) => (
         <Carousel.Item key={idx}>
           <div
@@ -43,20 +44,23 @@ export default function Slider() {
               textAlign: "center",
               color: "white",
               padding: "0 20px 100px",
-            }}>
+            }}
+          >
             <div
               style={{
                 marginBottom: "40px",
                 width: "100%",
                 maxWidth: "800px",
-              }}></div>
+              }}
+            ></div>
             <h1
               style={{
                 fontSize: "3rem",
                 fontWeight: "bold",
                 marginBottom: "20px",
                 textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
-              }}>
+              }}
+            >
               The Best Streaming Experience
             </h1>
             <p
@@ -65,7 +69,8 @@ export default function Slider() {
                 maxWidth: "1000px",
                 marginBottom: "30px",
                 textShadow: "1px 1px 2px rgba(0, 0, 0, 0.5)",
-              }}>
+              }}
+            >
               StreamVibe is the best streaming experience for watching your
               favorite movies and shows on demand, anytime, anywhere. With
               StreamVibe, you can enjoy a wide variety of content, including the
@@ -75,7 +80,7 @@ export default function Slider() {
             </p>
             <Button
               variant="danger"
-              className="slider-button"
+              className="slider-button d-flex justify-content-center align-items-center"
               size="lg"
               style={{
                 background: "var(--main-color)",
@@ -86,8 +91,9 @@ export default function Slider() {
                 borderRadius: "20px",
                 margin: "0 auto",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-              }}>
-              <FaPlay />
+              }}
+            >
+              <FaPlay className="me-2" />
               Start Watching Now
             </Button>
           </div>

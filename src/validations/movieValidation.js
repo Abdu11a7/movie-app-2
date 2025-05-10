@@ -114,7 +114,13 @@ export const movieSchema = Joi.object({
 
   DVD: Joi.string().allow("").optional(),
 
-  BoxOffice: Joi.number().allow("").optional(),
+  BoxOffice: Joi.string().allow("").optional(),
+
+  Trailer: Joi.string().uri().required().messages({
+    "string.empty": "Trailer URL is required",
+    "string.uri": "Trailer must be a valid URL",
+    "any.required": "Trailer URL is required",
+  }),
 
   Production: Joi.string().allow("").optional(),
 

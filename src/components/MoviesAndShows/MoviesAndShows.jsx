@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Form, Row, Col, InputGroup, Button } from "react-bootstrap";
 import MovieCard from "../MovieCard";
+import { getAllGenres, getAllMovies } from "../../API/FetchData";
+import { data } from "react-router-dom";
 
 export function MoviesAndShows() {
   const [movies] = useState([
@@ -159,7 +161,7 @@ export function MoviesAndShows() {
   ]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
-
+  const [genre, setGenre] = useState([]);
   const getInputValues = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
   };
@@ -171,14 +173,22 @@ export function MoviesAndShows() {
     return matchesSearch && matchesGenre;
   });
 
+  useEffect(() => {
+    const loadGenres = async () => {
+      const genreList = await getAllGenres();
+      setGenre(genreList);
+    };
+    loadGenres();
+  }, []);
   return (
     <div
-      className="container"
+      className="container mt-3"
       style={{
         color: "#fff",
-      }}>
+      }}
+    >
       <h1 className="text-center mb-5 fw-bold">Movies</h1>
-      <Form className="d-flex   mb-4">
+      <Form className="d-flex   mb-4 justify-content-center align-items-center">
         <InputGroup className="w-50">
           <Form.Control
             type="text"
@@ -200,14 +210,14 @@ export function MoviesAndShows() {
             color: "#fff",
             marginLeft: "1rem",
           }}
-          onChange={(e) => setSelectedGenre(e.target.value)}>
-          <option value="All">All Genres</option>
-          <option value="Action">Action</option>
-          <option value="Sci-Fi">Sci-Fi</option>
-          <option value="Thriller">Thriller</option>
-          <option value="Drama">Drama</option>
-          <option value="Horror">Horror</option>
-          <option value="Comedy">Comedy</option>
+          onChange={(e) => setSelectedGenre(e.target.value)}
+        >
+          <option value="ALL">All Genres</option>
+          {genre.map((index) => (
+            <option key={index} value={index}>
+              {index}
+            </option>
+          ))}
         </Form.Select>
       </Form>
 
