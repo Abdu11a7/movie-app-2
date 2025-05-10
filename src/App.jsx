@@ -14,6 +14,8 @@ import { MoviesAndShows } from "./components/MoviesAndShows/MoviesAndShows";
 import AboutUs from "./components/AboutUs";
 import DashBoard from "./components/Dashboard/Dashboard";
 import MovieDetails from "./components/MovieDetails/MovieDetails";
+import MovieManagement from "./components/MovieMangement/MovieManagement";
+import MovieForm from "./components/MovieForm/MovieForm";
 
 const router = createBrowserRouter([
   {
@@ -52,7 +54,14 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: <DashBoard />,
       },
-
+      {
+        path: "add-movie",
+        element: <MovieManagement />,
+      },
+      {
+        path: "movies/:id/edit",
+        element: <MovieForm />,
+      },
       { path: "*", element: <Notfound /> },
     ],
   },

@@ -4,18 +4,15 @@
   --text-light: #ffffff;
   --main-color: #e3080f;
   --text-muted: #aaaaaa;
-  --gold-color: #ffc107
+  --gold-color: #ffc107;
 }
-
 
 .movies-section {
   background-color: var(--bg-dark);
   color: var(--text-light);
-  padding: 2rem;
   border-radius: 8px;
   margin-bottom: 2rem;
 }
-
 
 .section-header {
   margin-bottom: 2rem;
@@ -30,7 +27,6 @@
   margin-bottom: 1.5rem;
 }
 
-
 .section-subtitle {
   color: var(--text-light);
   font-size: 1.5rem;
@@ -38,7 +34,6 @@
   border-bottom: 2px solid #333;
   padding-bottom: 0.5rem;
 }
-
 
 .genres-list {
   display: flex;
@@ -58,7 +53,6 @@
   color: var(--main-color);
 }
 
-
 .release-dates {
   display: flex;
   flex-direction: column;
@@ -72,7 +66,6 @@
   border-left: 3px solid var(--main-color);
   font-size: 0.9rem;
 }
-
 
 .movies-row {
   margin-top: 1.5rem;
@@ -134,12 +127,3 @@
 .movie-card .btn-danger:hover {
   background-color: #cc0000;
 }
-
-
-
-
-
-
-
-
-
