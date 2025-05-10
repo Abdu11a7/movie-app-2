@@ -16,3 +16,7 @@ input::placeholder,
 textarea::placeholder {
   color: #cdcccc !important;
 }
+
+.form-control {
+  border-color: rgb(51, 51, 51);
+}

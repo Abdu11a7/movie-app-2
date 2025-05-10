@@ -63,8 +63,8 @@ export default function AppNavbar() {
             <NavLink to="/movies&shows" className="nav-link text-white">
               Movies & Shows
             </NavLink>
-            <NavLink to="support" className="nav-link text-white">
-              Support
+            <NavLink to="faq" className="nav-link text-white">
+              FAQ
             </NavLink>
             <NavLink to="/contact-us" className="nav-link text-white">
               Contact Us

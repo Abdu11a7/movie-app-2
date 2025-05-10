@@ -6,7 +6,6 @@ import Layout from "./components/Layout";
 import Home from "./components/HomePage/Home";
 import Movies from "./components/Movies";
 import About from "./components/AboutUs";
-import Support from "./components/Support/Support";
 import Notfound from "./components/Notfound";
 import AdminLogin from "./components/AdminLogin/AdminLogin";
 import { ContactUs } from "./components/ContactUs/ContactUs";
@@ -15,6 +14,7 @@ import AboutUs from "./components/AboutUs";
 import DashBoard from "./components/Dashboard/Dashboard";
 import MovieDetails from "./components/MovieDetails/MovieDetails";
 import MovieForm from "./components/MovieForm/MovieForm";
+import Faq from "./components/Support/Faq";
 
 const router = createBrowserRouter([
   {
@@ -34,8 +34,8 @@ const router = createBrowserRouter([
         element: <MovieDetails />,
       },
       {
-        path: "support",
-        element: <Support />,
+        path: "faq",
+        element: <Faq />,
       },
       {
         path: "contact-us",
