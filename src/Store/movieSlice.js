@@ -1,224 +1,292 @@
-// features/movies/movieSlice.js
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import * as api from "../API/FetchData"; // Your existing API functions
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import * as movieAPI from "../API/FetchData";
+
+// Async Thunks for each API operation
+export const fetchAllMovies = createAsyncThunk(
+  "movies/fetchAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await movieAPI.getAllMovies();
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchPopularMovies = createAsyncThunk(
+  "movies/fetchPopular",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await movieAPI.getPopularMovies();
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchNewestMovies = createAsyncThunk(
+  "movies/fetchNewest",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await movieAPI.getNewestMovies();
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchMovieById = createAsyncThunk(
+  "movies/fetchById",
+  async (imdbID, { rejectWithValue }) => {
+    try {
+      return await movieAPI.getMovieById(imdbID);
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const searchMovies = createAsyncThunk(
+  "movies/search",
+  async (searchQuery, { rejectWithValue }) => {
+    try {
+      return await movieAPI.getMovieBySearch(searchQuery);
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const filterMoviesByGenre = createAsyncThunk(
+  "movies/filterByGenre",
+  async (genre, { rejectWithValue }) => {
+    try {
+      return await movieAPI.filterByGenre(genre);
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const filterMoviesByLanguage = createAsyncThunk(
+  "movies/filterByLanguage",
+  async (language, { rejectWithValue }) => {
+    try {
+      return await movieAPI.filterByLanguage(language);
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchAllGenres = createAsyncThunk(
+  "movies/fetchAllGenres",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await movieAPI.getAllGenres();
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchAllLanguages = createAsyncThunk(
+  "movies/fetchAllLanguages",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await movieAPI.getAllLanguages();
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const createMovie = createAsyncThunk(
+  "movies/create",
+  async (movieData, { rejectWithValue }) => {
+    try {
+      return await movieAPI.addMovie(movieData);
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateMovie = createAsyncThunk(
+  "movies/update",
+  async ({ id, movieData }, { rejectWithValue }) => {
+    try {
+      return await movieAPI.editMovie(id, movieData);
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const removeMovie = createAsyncThunk(
+  "movies/delete",
+  async (imdbID, { rejectWithValue }) => {
+    try {
+      await movieAPI.deleteMovie(imdbID);
+      return imdbID;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const addReview = createAsyncThunk(
+  "movies/addReview",
+  async ({ id, review }, { rejectWithValue }) => {
+    try {
+      return await movieAPI.addReviewToMovie(id, review);
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const initialState = {
-  movies: [],
+  allMovies: [],
   popularMovies: [],
   newestMovies: [],
   filteredMovies: [],
   currentMovie: null,
   genres: [],
   languages: [],
-  loading: false,
+  searchResults: [],
+  status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
+  adminStatus: movieAPI.checkIfAdminLogged(),
 };
 
-// Async Thunks
-export const fetchMovies = createAsyncThunk("movies/fetchMovies", async () => {
-  const response = await api.getAllMovies();
-  return response.data;
-});
-
-export const fetchPopularMovies = createAsyncThunk(
-  "movies/fetchPopularMovies",
-  async () => {
-    return await api.getPopularMovies();
-  }
-);
-
-export const fetchNewestMovies = createAsyncThunk(
-  "movies/fetchNewestMovies",
-  async () => {
-    return await api.getNewestMovies();
-  }
-);
-
-export const fetchMovieById = createAsyncThunk(
-  "movies/fetchMovieById",
-  async (imdbID) => {
-    const response = await api.getMovieById(imdbID);
-    return response.data;
-  }
-);
-
-export const searchMovies = createAsyncThunk(
-  "movies/searchMovies",
-  async (query) => {
-    return await api.getMovieBySearch(query);
-  }
-);
-
-export const fetchMoviesByType = createAsyncThunk(
-  "movies/fetchMoviesByType",
-  async (type) => {
-    const response = await api.getMovieByType(type);
-    return response.data;
-  }
-);
-
-export const filterMoviesByGenre = createAsyncThunk(
-  "movies/filterMoviesByGenre",
-  async (genre) => {
-    return await api.filterByGenre(genre);
-  }
-);
-
-export const filterMoviesByLanguage = createAsyncThunk(
-  "movies/filterMoviesByLanguage",
-  async (language) => {
-    return await api.filterByLanguage(language);
-  }
-);
-
-export const fetchAllGenres = createAsyncThunk(
-  "movies/fetchAllGenres",
-  async () => {
-    return await api.getAllGenres();
-  }
-);
-
-export const fetchAllLanguages = createAsyncThunk(
-  "movies/fetchAllLanguages",
-  async () => {
-    return await api.getAllLanguages();
-  }
-);
-
-export const addMovie = createAsyncThunk("movies/addMovie", async (movie) => {
-  const response = await api.addMovie(movie);
-  return response.data;
-});
-
-export const updateMovie = createAsyncThunk(
-  "movies/updateMovie",
-  async ({ id, movie }) => {
-    const response = await api.editMovie(id, movie);
-    return response.data;
-  }
-);
-
-export const deleteMovie = createAsyncThunk(
-  "movies/deleteMovie",
-  async (imdbID) => {
-    await api.deleteMovie(imdbID);
-    return imdbID;
-  }
-);
-
-export const addReview = createAsyncThunk(
-  "movies/addReview",
-  async ({ id, review }) => {
-    const response = await api.addReviewToMovie(id, review);
-    return response;
-  }
-);
-
-const moviesSlice = createSlice({
+const movieSlice = createSlice({
   name: "movies",
   initialState,
   reducers: {
     clearCurrentMovie: (state) => {
       state.currentMovie = null;
     },
+    clearSearchResults: (state) => {
+      state.searchResults = [];
+    },
     clearFilteredMovies: (state) => {
       state.filteredMovies = [];
     },
+    adminLogin: (state) => {
+      state.adminStatus = true;
+    },
+    adminLogout: (state) => {
+      state.adminStatus = false;
+      movieAPI.handleSignOutAdmin();
+    },
   },
   extraReducers: (builder) => {
+    // First handle all specific cases with addCase
     builder
-      // Fetch Movies
-      .addCase(fetchMovies.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+      .addCase(fetchAllMovies.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.allMovies = action.payload;
       })
-      .addCase(fetchMovies.fulfilled, (state, action) => {
-        state.loading = false;
-        state.movies = action.payload;
-      })
-      .addCase(fetchMovies.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      })
-
-      // Popular Movies
       .addCase(fetchPopularMovies.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.popularMovies = action.payload;
       })
-
-      // Newest Movies
       .addCase(fetchNewestMovies.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.newestMovies = action.payload;
       })
-
-      // Movie by ID
       .addCase(fetchMovieById.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.currentMovie = action.payload;
       })
-
-      // Search Movies
       .addCase(searchMovies.fulfilled, (state, action) => {
-        state.filteredMovies = action.payload;
+        state.status = "succeeded";
+        state.searchResults = action.payload;
       })
-
-      // Movies by Type
-      .addCase(fetchMoviesByType.fulfilled, (state, action) => {
-        state.filteredMovies = action.payload;
-      })
-
-      // Filter by Genre
       .addCase(filterMoviesByGenre.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.filteredMovies = action.payload;
       })
-
-      // Filter by Language
       .addCase(filterMoviesByLanguage.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.filteredMovies = action.payload;
       })
-
-      // All Genres
       .addCase(fetchAllGenres.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.genres = action.payload;
       })
-
-      // All Languages
       .addCase(fetchAllLanguages.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.languages = action.payload;
       })
-
-      // Add Movie
-      .addCase(addMovie.fulfilled, (state, action) => {
-        state.movies.push(action.payload);
+      .addCase(createMovie.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.allMovies.push(action.payload);
       })
-
-      // Update Movie
       .addCase(updateMovie.fulfilled, (state, action) => {
-        const index = state.movies.findIndex(
+        state.status = "succeeded";
+        const index = state.allMovies.findIndex(
           (movie) => movie.imdbID === action.payload.imdbID
         );
         if (index !== -1) {
-          state.movies[index] = action.payload;
+          state.allMovies[index] = action.payload;
         }
         if (state.currentMovie?.imdbID === action.payload.imdbID) {
           state.currentMovie = action.payload;
         }
       })
-
-      // Delete Movie
-      .addCase(deleteMovie.fulfilled, (state, action) => {
-        state.movies = state.movies.filter(
+      .addCase(removeMovie.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.allMovies = state.allMovies.filter(
           (movie) => movie.imdbID !== action.payload
         );
       })
-
-      // Add Review
       .addCase(addReview.fulfilled, (state, action) => {
+        state.status = "succeeded";
         if (state.currentMovie?.imdbID === action.payload.imdbID) {
           state.currentMovie = action.payload;
         }
       });
+
+    // Then add matchers for generic cases
+    builder
+      .addMatcher(
+        (action) => action.type.endsWith("/pending"),
+        (state) => {
+          state.status = "loading";
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith("/rejected"),
+        (state, action) => {
+          state.status = "failed";
+          state.error = action.payload || "Something went wrong";
+        }
+      );
   },
 });
 
-export const { clearCurrentMovie, clearFilteredMovies } = moviesSlice.actions;
-export default moviesSlice.reducer;
+export const {
+  clearCurrentMovie,
+  clearSearchResults,
+  clearFilteredMovies,
+  adminLogin,
+  adminLogout,
+} = movieSlice.actions;
+
+export default movieSlice.reducer;
+
+// Selectors
+export const selectAllMovies = (state) => state.movies.allMovies;
+export const selectPopularMovies = (state) => state.movies.popularMovies;
+export const selectNewestMovies = (state) => state.movies.newestMovies;
+export const selectCurrentMovie = (state) => state.movies.currentMovie;
+export const selectGenres = (state) => state.movies.genres;
+export const selectLanguages = (state) => state.movies.languages;
+export const selectSearchResults = (state) => state.movies.searchResults;
+export const selectFilteredMovies = (state) => state.movies.filteredMovies;
+export const selectMoviesStatus = (state) => state.movies.status;
+export const selectMoviesError = (state) => state.movies.error;
+export const selectAdminStatus = (state) => state.movies.adminStatus;

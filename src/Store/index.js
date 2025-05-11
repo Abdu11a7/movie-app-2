@@ -9,7 +9,14 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false,
+      serializableCheck: {
+        // Ignore these field paths in all actions
+        ignoredActionPaths: ["payload.timestamp"], // Example for non-serializable values in actions
+        // Ignore these paths in the state
+        ignoredPaths: ["auth.token", "movies.someNonSerializableField"], // Add any non-serializable fields here
+      },
     }),
+  devTools: process.env.NODE_ENV !== "production", // Enable Redux DevTools only in development
 });
+
 export default store;

@@ -9,104 +9,98 @@ export default function ActionSection({ onWatchTrailer, onAddToWatchlist }) {
 
   return (
     <Card
-      className="p-3 rounded text-center mb-4 overflow-hidden position-relative"
+      className="position-relative text-white overflow-hidden rounded-5 p-4 p-md-5 mb-5 shadow-lg"
       style={{
-        border: "2px solid rgba(255, 255, 255, 0.1)",
-        background: "transparent",
-        minHeight: "400px",
-      }}>
+        background: "rgba(18, 18, 18, 0.65)",
+        border: "1px solid rgba(255, 255, 255, 0.08)",
+        backdropFilter: "blur(20px)",
+        minHeight: "480px",
+        transition: "transform 0.4s ease, box-shadow 0.4s ease",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "scale(1.015)";
+        e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.6)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "scale(1)";
+        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.4)";
+      }}
+    >
+      {/* Blurred Background */}
       <div
         className="position-absolute top-0 start-0 w-100 h-100"
         style={{
           backgroundImage: `url(${moviePoster})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          filter: "blur(8px) brightness(0.4)",
+          filter: "blur(18px) brightness(0.25)",
           zIndex: 0,
-          opacity: 0.8,
+          opacity: 0.7,
         }}
       />
 
+      {/* Overlay Gradient */}
       <div
         className="position-absolute top-0 start-0 w-100 h-100"
         style={{
           background:
-            "linear-gradient(135deg, rgba(255,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%)",
+            "linear-gradient(to bottom right, rgba(10, 10, 10, 0.8), rgba(20, 20, 20, 0.9))",
           zIndex: 1,
         }}
       />
 
+      {/* Foreground Content */}
       <div
-        style={{
-          position: "relative",
-          zIndex: 2,
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}>
-        <div className="d-flex justify-content-center mb-4">
-          <Image
-            src={moviePoster}
-            alt="Movie Poster"
-            className="rounded"
-            style={{
-              width: "150px",
-              height: "225px",
-              objectFit: "cover",
-              border: "3px solid #ff0000",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
-            }}
-          />
-        </div>
-
-        <h3
-          className="text-white"
+        className="position-relative h-100 d-flex flex-column align-items-center text-center"
+        style={{ zIndex: 2 }}
+      >
+        {/* Poster Image */}
+        <Image
+          src={moviePoster}
+          alt="Movie Poster"
+          className="rounded-4 mb-4"
           style={{
-            fontSize: "2.5rem",
-            fontWeight: "bold",
-            marginBottom: "0.5rem",
-          }}>
-          {userScore}°
-        </h3>
-
-        <div className="my-3">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <StarFill
-              key={star}
-              color={
-                star <= starRating ? "#ffcc00" : "rgba(255, 255, 255, 0.3)"
-              }
-              className="mx-1"
-              style={{ fontSize: "1.5rem" }}
-            />
-          ))}
-        </div>
-
-        <div className="mt-auto">
+            width: "100%",
+            height: "300px",
+            objectFit: "cover",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.7)",
+            transform: "translateY(-20px)",
+          }}
+        />
+        <Card.Text>
+          <h3 className="text-warning">
+            8.8 <i className="fa-solid fa-star"></i>
+          </h3>
+        </Card.Text>
+        {/* Buttons */}
+        <div className="mt-auto w-100">
           <Button
             variant="danger"
-            className="w-100 py-2 mb-3"
+            className="w-100 fw-semibold py-2 mb-3 rounded-3"
             onClick={onWatchTrailer}
             style={{
-              fontWeight: "bold",
+              backgroundColor: "#e50914",
+              border: "none",
+              fontSize: "1rem",
               letterSpacing: "1px",
-              boxShadow: "0 2px 8px rgba(255, 0, 0, 0.5)",
-              backgroundColor: "#e3080f",
-            }}>
-            WATCH TRAILER
+              boxShadow: "0 3px 10px rgba(229, 9, 20, 0.5)",
+            }}
+          >
+            ▶ WATCH TRAILER
           </Button>
 
           <Button
             variant="outline-light"
-            className="w-100 py-2"
+            className="w-100 fw-semibold py-2 rounded-3"
             onClick={onAddToWatchlist}
             style={{
-              fontWeight: "bold",
+              fontSize: "1rem",
               letterSpacing: "1px",
               borderWidth: "2px",
-            }}>
-            ADD TO WATCHLIST
+              borderColor: "rgba(255, 255, 255, 0.3)",
+            }}
+          >
+            ＋ ADD TO WATCHLIST
           </Button>
         </div>
       </div>

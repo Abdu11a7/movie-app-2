@@ -7,6 +7,7 @@ import ReviewModal from "./../ReviewModal/ReviewModal";
 import ActionSection from "../ActionSection/ActionSection";
 import MainContent from "./../MainContent/MainContent";
 import TrailerModal from "./../TrailerModal/TrailerModal";
+import { motion } from "framer-motion";
 
 export default function MovieDetails() {
   const [showTrailer, setShowTrailer] = useState(false);
@@ -34,41 +35,70 @@ export default function MovieDetails() {
   };
 
   return (
-    <div
-      className="text-white min-vh-100 py-4"
+    <motion.div
+      className="min-vh-100 d-flex align-items-start py-5"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${movie.Poster})`,
+        backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.9) 100%), url(${movie.Poster})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
-      }}>
-      <Container>
-        <HeaderSection
-          title={movie.Title}
-          year={movie.Year}
-          rating={movie.Rated}
-          genre={movie.Genre.join(", ")}
-        />
+        color: "#f8f9fa", // light white for better readability
+        fontFamily: "'Segoe UI', Roboto, sans-serif",
+      }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
+      <Container className="px-4 px-md-5">
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <HeaderSection
+            title={movie.Title}
+            year={movie.Year}
+            rating={movie.Rated}
+            genre={movie.Genre.join(", ")}
+          />
+        </motion.div>
 
-        <Row className="mt-4">
-          <Col md={8}>
-            <MainContent description={movie.Plot} creators={movie.Director} />
-          </Col>
-
+        <Row className="mt-5 g-4">
           <Col md={4}>
-            <ActionSection
-              userScore={movie.imdbRating * 10}
-              moviePoster={movie.Poster}
-              onWatchTrailer={() => setShowTrailer(true)}
-              onAddToWatchlist={() => {}}
-            />
+            <motion.div
+              initial={{ x: -40, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.7 }}
+            >
+              <ActionSection
+                userScore={movie.imdbRating * 10}
+                moviePoster={movie.Poster}
+                onWatchTrailer={() => setShowTrailer(true)}
+                onAddToWatchlist={() => {}}
+              />
+            </motion.div>
+          </Col>
+          <Col md={8}>
+            <motion.div
+              initial={{ x: 40, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.7 }}
+            >
+              <MainContent description={movie.Plot} creators={movie.Director} />
+            </motion.div>
           </Col>
         </Row>
 
-        <ReviewsSection
-          reviews={movie.Ratings}
-          onAddReview={() => setShowReview(true)}
-        />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+        >
+          <ReviewsSection
+            reviews={movie.Ratings}
+            onAddReview={() => setShowReview(true)}
+          />
+        </motion.div>
       </Container>
 
       <TrailerModal
@@ -82,6 +112,6 @@ export default function MovieDetails() {
         onHide={() => setShowReview(false)}
         onSubmit={addReview}
       />
-    </div>
+    </motion.div>
   );
 }
