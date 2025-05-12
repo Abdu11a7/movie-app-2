@@ -15,6 +15,7 @@ import DashBoard from "./components/Dashboard/Dashboard";
 import MovieDetails from "./components/MovieDetails/MovieDetails";
 import MovieForm from "./components/MovieForm/MovieForm";
 import Faq from "./components/Support/Faq";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -51,11 +52,19 @@ const router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        element: <DashBoard />,
+        element: (
+          <ProtectedRoute>
+            <DashBoard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "movies/:id/edit",
-        element: <MovieForm />,
+        element: (
+          <ProtectedRoute>
+            <MovieForm />
+          </ProtectedRoute>
+        ),
       },
       { path: "*", element: <Notfound /> },
     ],

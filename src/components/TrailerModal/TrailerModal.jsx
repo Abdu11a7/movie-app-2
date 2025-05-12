@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 
-function TrailerModal({ show, onHide, movieTitle }) {
+function TrailerModal({ show, onHide, movieTitle, movieTrailer }) {
   return (
     <Modal
       show={show}
@@ -39,7 +39,7 @@ function TrailerModal({ show, onHide, movieTitle }) {
             <iframe
               width="100%"
               height="100%"
-              src="https://www.youtube.com/embed/LoebZZ8K5N0"
+              src={movieTrailer}
               title="Trailer"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

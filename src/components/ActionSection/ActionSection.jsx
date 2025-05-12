@@ -1,11 +1,13 @@
 import React from "react";
 import { Button, Card, Image } from "react-bootstrap";
 import { StarFill } from "react-bootstrap-icons";
-import moviePoster from "../../assets/download.jpeg";
-export default function ActionSection({ onWatchTrailer, onAddToWatchlist }) {
-  const userScore = 88;
+export default function ActionSection({
+  onWatchTrailer,
+  onAddToWatchlist,
+  moviePoster,
+  userScore,
+}) {
 
-  const starRating = Math.round((userScore / 100) * 5);
 
   return (
     <Card
@@ -69,7 +71,8 @@ export default function ActionSection({ onWatchTrailer, onAddToWatchlist }) {
         />
         <Card.Text>
           <h3 className="text-warning">
-            8.8 <i className="fa-solid fa-star"></i>
+            {userScore}
+            <i className="fa-solid fa-star"></i>
           </h3>
         </Card.Text>
         {/* Buttons */}

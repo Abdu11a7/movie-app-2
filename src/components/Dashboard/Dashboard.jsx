@@ -1,49 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import BoardHeader from "../BoardHeader";
 import "../../styles/DashBoard.css";
 import BoardList from "../BoardList";
-import {
-  checkIfAdminLogged,
-  deleteMovie,
-  getAllMovies,
-} from "./../../API/FetchData";
-import { Button, Modal, Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllMovies, removeMovie } from "../../Store/movieSlice";
+import { checkAdminSession, selectIsAdmin } from "../../Store/authSlice";
 
 export default function DashBoard() {
-  const [media, setMedia] = useState([]);
-  const [loading, setLoading] = useState(false); // Changed to boolean
-  const [filteredMedia, setFilteredMedia] = useState([]);
-  const [error, setError] = useState("");
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [navigationFlag, setNavigationFlag] = useState(false);
 
-  const fetchMovies = async () => {
-    setLoading(true);
-    try {
-      const data = await getAllMovies();
-      setMedia(data);
-      setFilteredMedia(data); // Initialize filtered media with all data
-      console.log(data); // Log the fresh data
-    } catch (err) {
-      setError(err.message);
-      console.error("Fetch error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { allMovies: media, status } = useSelector((state) => state.movies);
+  const [filteredMedia, setFilteredMedia] = useState([]);
+  const isAdmin = useSelector(selectIsAdmin);
 
   useEffect(() => {
-    if (checkIfAdminLogged()) {
-      fetchMovies();
-    } else {
-      navigate("/admin");
-    }
-  }, []);
+    dispatch(checkAdminSession());
+    dispatch(fetchAllMovies());
+  }, [dispatch]);
+
+  useEffect(() => {
+    setFilteredMedia(media);
+  }, [media]);
+
+  if (!isAdmin) {
+    return (
+      <div className="container mt-5">
+        <div className="alert alert-danger">
+          Unauthorized access. Please login as admin.
+        </div>
+      </div>
+    );
+  }
 
   const handleSearch = (searchTerm) => {
     const filtered = media.filter(
@@ -56,28 +48,27 @@ export default function DashBoard() {
     setFilteredMedia(filtered);
   };
 
-  const handleAdd = () => {
-    navigate("/movies/0/edit");
-  };
-
-  const handleEdit = (id) => {
-    navigate(`/movies/${id}/edit`);
-  };
-
-  const handleDelete = async (imdbID) => {
-    try {
-      await deleteMovie(imdbID);
-      fetchMovies(); // Assuming you have a function to refresh the list
-    } catch (error) {
-      alert(`Delete failed: ${error.message}`);
+  const handleNavigation = (path) => {
+    if (!navigationFlag) {
+      setNavigationFlag(true);
+      navigate(path);
     }
   };
 
-  const handleView = (id) => {
-    navigate(`/moviedetails/${id}`);
+  const handleAdd = () => handleNavigation("/movies/0/edit");
+  const handleEdit = (id) => handleNavigation(`/movies/${id}/edit`);
+  const handleView = (id) => handleNavigation(`/moviedetails/${id}`);
+
+  const handleDelete = async (imdbID) => {
+    try {
+      await dispatch(removeMovie(imdbID)).unwrap();
+      dispatch(fetchAllMovies());
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
   };
 
-  if (loading) {
+  if (status === "loading") {
     return <div className="loading-spinner">Loading...</div>;
   }
 
@@ -96,7 +87,7 @@ export default function DashBoard() {
             </tr>
           </thead>
           <tbody>
-            {media.map((item) => (
+            {filteredMedia.map((item) => (
               <tr key={item.id}>
                 <td>{item.Title}</td>
                 <td>{item.Type}</td>

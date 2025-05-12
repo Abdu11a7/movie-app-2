@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { checkAdminPassword, checkIfAdminLogged } from "../../API/FetchData";
 import SharedBtn from "../../SharedBtn";
@@ -9,21 +9,52 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const [adminPass, setAdminPass] = useState("");
   const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
   const changeInput = (e) => setAdminPass(e.target.value);
 
   const handleLoginAdmin = async (e) => {
     e.preventDefault();
-    if (await checkAdminPassword(adminPass)) {
-      navigate("/dashboard");
-    } else {
+    if (!adminPass.trim()) return;
+
+    setIsLoading(true);
+    setError(false);
+
+    try {
+      const isValid = await checkAdminPassword(adminPass);
+      if (isValid) {
+        navigate("/dashboard", { replace: true });
+      } else {
+        setError(true);
+      }
+    } catch (err) {
+      console.error("Login error:", err);
       setError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (checkIfAdminLogged()) navigate("/dashboard");
-  }, []);
+    if (!authChecked) {
+      const isLoggedIn = checkIfAdminLogged();
+      if (isLoggedIn) {
+        navigate("/dashboard", { replace: true });
+      }
+      setAuthChecked(true);
+    }
+  }, [navigate, authChecked]);
+
+  if (!authChecked) {
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="admin-login-page d-flex align-items-center justify-content-center min-vh-100">
@@ -75,6 +106,7 @@ export default function AdminLogin() {
                 }`}
                 placeholder="Enter your admin password"
                 onChange={changeInput}
+                value={adminPass}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
@@ -95,7 +127,19 @@ export default function AdminLogin() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
               >
-                <SharedBtn>Login</SharedBtn>
+                <SharedBtn
+                  type="submit"
+                  disabled={isLoading || !adminPass.trim()}
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2"></span>
+                      Authenticating...
+                    </>
+                  ) : (
+                    "Login"
+                  )}
+                </SharedBtn>
               </motion.div>
             </form>
           </motion.div>

@@ -54,23 +54,8 @@ function ReviewsSection({ reviews, onAddReview }) {
                   <div>
                     {/* Reviewer Name */}
                     <span className="fw-bold" style={{ fontSize: "1.1rem" }}>
-                      {review.reviewerName || "Anonymous"}
+                      {review.Source || "Anonymous"}
                     </span>
-                    {/* Rating */}
-                    <div
-                      className="text-warning mt-2"
-                      style={{ fontSize: "1.3rem" }}
-                    >
-                      {[...Array(5)].map((_, i) => (
-                        <span key={i}>
-                          {i < (parseInt(review.rating) || 0) ? (
-                            <i className="bi bi-star-fill" />
-                          ) : (
-                            <i className="bi bi-star" />
-                          )}
-                        </span>
-                      ))}
-                    </div>
                   </div>
                 </div>
 
@@ -82,7 +67,7 @@ function ReviewsSection({ reviews, onAddReview }) {
                     color: "#f8f9fa",
                   }}
                 >
-                  hello world
+                  {review.Value}
                 </p>
 
                 {/* Optional: Review Date (If available) */}

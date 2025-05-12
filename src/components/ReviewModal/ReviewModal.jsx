@@ -1,46 +1,61 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, FloatingLabel } from "react-bootstrap";
+import { addReview } from "../../Store/movieSlice";
+import { useDispatch } from "react-redux";
 
-function ReviewModal({ show, onHide, onSubmit }) {
-  const [rating, setRating] = useState(0);
+function ReviewModal({ show, onHide, movie }) {
+  // Added movie prop
   const [reviewText, setReviewText] = useState("");
+  const [reviewerName, setReviewerName] = useState("");
+  const dispatch = useDispatch();
+
+  // Removed duplicate showReviewModal state (it should be controlled by parent)
 
   const handleSubmit = () => {
-    onSubmit({
-      Source: "User",
-      Value: `${rating}/5`,
-      Content: reviewText,
-    });
-    setRating(0);
+    if (!reviewText || !reviewerName) return;
+
+    const review = {
+      Source: reviewerName,
+      Value: reviewText,
+    };
+
+    dispatch(addReview({ id: movie.id, review }));
     setReviewText("");
+    setReviewerName("");
     onHide();
   };
 
   return (
     <Modal show={show} onHide={onHide} centered>
-      <Modal.Header closeButton>
+      <Modal.Header
+        closeButton
+        style={{
+          backgroundColor: "#000000",
+          color: "white",
+          borderColor: "#000000",
+        }}
+      >
         <Modal.Title>Add Your Review</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body
+        style={{
+          backgroundColor: "#000000",
+          color: "white",
+          borderColor: "#000",
+        }}
+      >
         <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>Your Rating</Form.Label>
-            <div className="d-flex align-items-center gap-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <i
-                  key={star}
-                  className={`bi ${
-                    star <= rating
-                      ? "bi-star-fill text-warning"
-                      : "bi-star text-secondary"
-                  }`}
-                  style={{ fontSize: "1.75rem", cursor: "pointer" }}
-                  onClick={() => setRating(star)}
-                ></i>
-              ))}
-            </div>
+          <Form.Group className="mb-3" id="reviewerName">
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              id="reviewerName"
+              name="reviewerName"
+              type="text"
+              placeholder="Enter Your Name"
+              value={reviewerName}
+              onChange={(e) => setReviewerName(e.target.value)}
+            />
           </Form.Group>
-
           <FloatingLabel
             controlId="reviewText"
             label="Your Review"
@@ -48,7 +63,6 @@ function ReviewModal({ show, onHide, onSubmit }) {
           >
             <Form.Control
               as="textarea"
-              placeholder="Your review"
               style={{ height: "100px" }}
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
@@ -57,14 +71,20 @@ function ReviewModal({ show, onHide, onSubmit }) {
           </FloatingLabel>
         </Form>
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer
+        style={{
+          backgroundColor: "#000000",
+          color: "white",
+          borderColor: "#000",
+        }}
+      >
         <Button variant="secondary" onClick={onHide}>
           Cancel
         </Button>
         <Button
-          variant="#e3080f"
+          variant="danger"
           onClick={handleSubmit}
-          disabled={!reviewText || rating === 0}
+          disabled={!reviewText || !reviewerName}
         >
           Submit Review
         </Button>

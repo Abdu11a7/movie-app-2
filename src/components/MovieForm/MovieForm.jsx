@@ -2,13 +2,36 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import SharedBtn from "./../../SharedBtn";
 import validateMovie from "./../../validations/movieValidation";
-import { addMovie, editMovie, getMovieById } from "../../API/FetchData";
+import {
+  createMovie,
+  updateMovie,
+  fetchMovieById,
+} from "../../Store/movieSlice";
+import { selectCurrentMovie, selectMoviesStatus } from "../../Store/movieSlice";
+import { checkAdminSession, selectIsAdmin } from "../../Store/authSlice";
 
 const MovieForm = () => {
   const { id } = useParams(); // Get id from URL params
+  const isAdmin = useSelector(selectIsAdmin);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  if (!isAdmin) {
+    return (
+      <div className="container mt-5">
+        <div className="alert alert-danger">
+          Unauthorized access. Please login as admin.
+        </div>
+      </div>
+    );
+  }
+
+  // Redux state
+  const currentMovie = useSelector(selectCurrentMovie);
+  const status = useSelector(selectMoviesStatus);
 
   // if id is 0 or null/undefined, we're adding a new movie, otherwise editing
   const isAddMode = id === "0";
@@ -29,16 +52,7 @@ const MovieForm = () => {
     Country: [""],
     Awards: "",
     Poster: "",
-    Ratings: [
-      {
-        Source: "",
-        Value: "",
-      },
-      {
-        Source: "",
-        Value: "",
-      },
-    ],
+    Ratings: [],
     Metascore: "N/A",
     imdbRating: "",
     imdbVotes: "",
@@ -53,28 +67,22 @@ const MovieForm = () => {
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [errors, setErrors] = useState({}); //3shan el errors elly htegy mn validation
+  const [errors, setErrors] = useState({}); // For validation errors
 
-  const getMovie = async (movieID) => {
-    try {
-      const data = await getMovieById(movieID);
-      return data; // ✅ Return the actual data
-    } catch (error) {
-      console.error("Failed to fetch movie:", error);
-      return null;
-    }
-  };
+  // Load movie data when editing
   useEffect(() => {
-    const fetchMovie = async () => {
-      const movieData = await getMovie(id);
+    dispatch(checkAdminSession());
+    if (!isAddMode && id !== "0") {
+      dispatch(fetchMovieById(id));
+    }
+  }, [id, isAddMode, dispatch]);
 
-      if (!isAddMode && id !== "0") {
-        setFormData(movieData);
-      }
-    };
-
-    fetchMovie();
-  }, [id, isAddMode]);
+  // Update form when currentMovie changes
+  useEffect(() => {
+    if (currentMovie && !isAddMode) {
+      setFormData(currentMovie);
+    }
+  }, [currentMovie, isAddMode]);
 
   // Handle changes to single-value form fields
   const handleChange = (e) => {
@@ -132,18 +140,20 @@ const MovieForm = () => {
   };
 
   // Handle form submission for both new and existing movies
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("default");
+
     if (validate()) {
-      if (isAddMode) {
-        addMovie(formData);
-      } else {
-        editMovie(formData.id, formData);
+      try {
+        if (isAddMode) {
+          await dispatch(createMovie(formData)).unwrap();
+        } else {
+          await dispatch(updateMovie({ id, movieData: formData })).unwrap();
+        }
+        navigate("/dashboard");
+      } catch (error) {
+        console.error("Operation failed:", error);
       }
-      navigate("/dashboard");
-    } else {
-      console.log("not");
     }
   };
 
@@ -151,6 +161,10 @@ const MovieForm = () => {
   const handleCancel = () => {
     navigate("/dashboard");
   };
+
+  if (status === "loading" && !isAddMode) {
+    return <div>Loading movie data...</div>;
+  }
 
   //Movie Form Template
   return (
@@ -563,13 +577,28 @@ const MovieForm = () => {
         </div>
 
         <div className="d-flex gap-2">
-          <SharedBtn type="submit" className="btn btn-danger">
-            {isAddMode ? "Add Movie" : "Update Movie"}
+          <SharedBtn
+            type="submit"
+            className="btn btn-danger"
+            disabled={status === "loading"}
+          >
+            {status === "loading" ? (
+              <span
+                className="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            ) : isAddMode ? (
+              "Add Movie"
+            ) : (
+              "Update Movie"
+            )}
           </SharedBtn>
           <button
             type="button"
             className="btn  rounded-2 btn-outline-light"
             onClick={handleCancel}
+            disabled={status === "loading"}
           >
             Cancel
           </button>

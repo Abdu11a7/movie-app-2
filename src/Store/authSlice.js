@@ -22,7 +22,7 @@ export const loginAdmin = createAsyncThunk(
 export const logoutAdmin = createAsyncThunk("auth/logoutAdmin", async () => {
   api.handleSignOutAdmin();
 });
-
+export const selectIsAdmin = (state) => state.auth.isAdmin;
 const authSlice = createSlice({
   name: "auth",
   initialState,

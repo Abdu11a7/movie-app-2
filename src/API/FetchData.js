@@ -92,7 +92,12 @@ export const deleteMovie = async (imdbID) => {
 };
 
 //ADD MOVIE
-export const addMovie = (movie) => axios.post(`${baseUrl}movies`, movie);
+// In your API/FetchData.js
+export const addMovie = async (movieData) => {
+  const response = await axios.post(`${baseUrl}movies`, movieData);
+  // Return only the data part
+  return response.data;
+};
 
 //edit movie
 export const editMovie = async (id, movie) => {

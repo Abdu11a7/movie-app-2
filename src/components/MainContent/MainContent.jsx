@@ -1,6 +1,18 @@
 import { motion } from "framer-motion";
 
-export default function MainContent({ description, creators }) {
+export default function MainContent({
+  description,
+  creators,
+  actors,
+  language,
+}) {
+  // Handle both array and string formats for creators
+  const creatorsList = Array.isArray(creators)
+    ? creators
+    : typeof creators === "string"
+    ? creators.split(", ")
+    : [];
+
   return (
     <motion.div
       className="p-4 p-md-5 rounded-3"
@@ -39,35 +51,99 @@ export default function MainContent({ description, creators }) {
         {description}
       </p>
 
-      <div>
-        <h5
-          style={{
-            fontWeight: "bold",
-            color: "#ff3c3c",
-            marginBottom: "1rem",
-            letterSpacing: "0.5px",
-            textTransform: "uppercase",
-          }}
-        >
-          Creators
-        </h5>
-        <div className="d-flex flex-wrap gap-2">
-          {creators.split(", ").map((creator, index) => (
-            <span
-              key={index}
-              className="px-3 py-2 rounded-2"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.07)",
-                fontSize: "0.95rem",
-                color: "#fff",
-                fontWeight: 500,
-              }}
-            >
-              {creator}
-            </span>
-          ))}
+      {creatorsList.length > 0 && (
+        <div>
+          <h5
+            style={{
+              fontWeight: "bold",
+              marginBottom: "1rem",
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+            }}
+          >
+            Creators
+          </h5>
+          <div className="d-flex flex-wrap gap-2">
+            {creatorsList.map((creator, index) => (
+              <span
+                key={index}
+                className="px-3 py-2 rounded-2"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.07)",
+                  fontSize: "0.95rem",
+                  color: "#fff",
+                  fontWeight: 500,
+                }}
+              >
+                {creator}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+      {actors.length > 0 && (
+        <div>
+          <h5
+            style={{
+              fontWeight: "bold",
+              marginBottom: "1rem",
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+              marginTop: "20px",
+            }}
+          >
+            Actors
+          </h5>
+          <div className="d-flex flex-wrap gap-2">
+            {actors.map((actors, index) => (
+              <span
+                key={index}
+                className="px-3 py-2 rounded-2"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.07)",
+                  fontSize: "0.95rem",
+                  color: "#fff",
+                  fontWeight: 500,
+                }}
+              >
+                {actors}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {language.length > 0 && (
+        <div>
+          <h5
+            style={{
+              fontWeight: "bold",
+              marginBottom: "1rem",
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+              marginTop: "20px",
+            }}
+          >
+            Language
+          </h5>
+          <div className="d-flex flex-wrap gap-2">
+            {language.map((language, index) => (
+              <span
+                key={index}
+                className="px-3 py-2 rounded-2"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.07)",
+                  fontSize: "0.95rem",
+                  color: "#fff",
+                  fontWeight: 500,
+                }}
+              >
+                {language}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }
